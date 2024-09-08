@@ -24,9 +24,9 @@ jobs:
       env:
         TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
 
-    # - name: Copy files
-    #   run: |
-    #     cp -r * <TARGET_REPO>/
+    - name: Copy files
+      run: |
+        cp -r * MainRepo/
       # Adjust this if you need specific files
 
     - name: Commit and push to target repository
