@@ -1,50 +1,44 @@
 name: testing github action
+
 on:
   push:
     branches:
-      - main
+      - main  # Trigger the action on pushes to the main branch
 
 jobs:
-  copy-files:
-    runs-on : ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          path: 'src'
-          ref: 'main'
-          persist-credentials: false
-      
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          path: 'dest'
-          ref: 'main'
-          repository: 'Arun1101/MainRepo'
-          token: ${{ secrets.TOKEN_GIT }}
-          fetch-depth: 0
-          persist-credentials: true
-      
-      - name: copy common files to new repo
-        shell: bash
-        run: |
-          git add -A
-          git status --porcelain | wc -l
-          if [[ $(git status --porcelain | wc -l) -gt 0]];
-            echo "::set-output name=hasNewFiles::true"
-          else
-            echo "::set-output name=hasNewFiles::false"
-          fi
+  deploy:
+    runs-on: ubuntu-latest
 
-      - name: Push new Files
-        if: ${{ steps.newFIles.outputs.hasNewFiles == 'true'}}
-        shell: bash
-        working-directory: dest
-        run: |
-          git config --global user.name "Arun1102"
-          git config --global user.email "arunattappan@gmail.com"
-          git commit -m "commit changes"
-          git push
+    steps:
+    - name: Checkout source repository
+      uses: actions/checkout@v3
+
+    - name: Set up Git
+      run: |
+        git config --global user.name "Arun1102"
+        git config --global user.email "arunattappan@gmail.com"
+
+    - name: Clone target repository
+      run: |
+        git clone https://github.com/Arun1102/MainRepo.git
+      env:
+        TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
+
+    # - name: Copy files
+    #   run: |
+    #     cp -r * <TARGET_REPO>/
+      # Adjust this if you need specific files
+
+    - name: Commit and push to target repository
+      run: |
+        cd MainRepo
+        git add .
+        git commit -m "Deploy updates"
+        git push
+      env:
+        TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
+
+
 
 
 
