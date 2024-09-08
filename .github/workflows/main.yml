@@ -34,7 +34,7 @@ jobs:
         cd MainRepo
         git add .
         git commit -m "Deploy updates"
-        git push
+        git push https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/Arun1102/MainRepo.git
       env:
         TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
 
