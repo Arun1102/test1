@@ -1,0 +1,21 @@
+name: testing github action
+'on': push
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print hello world
+        run: echo "Hello world"
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Configure Git
+        run: |
+          git config --global user.name "Arun1102"
+          git config --global user.email "arunattappan@gmail.com"
+      - name: Add remote repository
+        env:
+          GIT_USER: Arun1102
+          TOKEN_GIT: '${{ secrets.TOKEN_GIT }}'
+        run: 'git remote add main https://github.com/Arun1102/MainRepo.git'
+      - name: Push to remote branch
+        run: 'git push main main:MainRepo'
