@@ -16,6 +16,6 @@ jobs:
         env:
           GIT_USER: Arun1102
           TOKEN_GIT: '${{ secrets.TOKEN_GIT }}'
-        run: 'git remote add test https://github.com/Arun1102/MainRepo.git'
+        run: 'git remote add test https://github.com/Arun1102/test1.git'
       - name: Push to remote branch
-        run: 'git push test main:MainRepo'
+        run: 'git push test main:test1'
