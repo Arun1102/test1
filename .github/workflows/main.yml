@@ -5,24 +5,46 @@ on:
       - main
 
 jobs:
-  configure-and-push:
-    runs-on: ubuntu-latest
-
+  copy-files:
+    runs-on : ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
+        with:
+          path: 'src'
+          ref: 'main'
+          persist-credentials: false
+      
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: 'dest'
+          ref: 'main'
+          repository: 'Arun1101/MainRepo'
+          token: ${{ secrets.TOKEN_GIT }}
+          fetch-depth: 0
+          persist-credentials: true
+      
+      - name: copy common files to new repo
+        shell: bash
+        run: |
+          git add -A
+          git status --porcelain | wc -l
+          if [[ $(git status --porcelain | wc -l) -gt 0]];
+            echo "::set-output name=hasNewFiles::true"
+          else
+            echo "::set-output name=hasNewFiles::false"
+          fi
 
-      - name: Configure Git
+      - name: Push new Files
+        if: ${{ steps.newFIles.outputs.hasNewFiles == 'true'}}
+        shell: bash
+        working-directory: dest
         run: |
           git config --global user.name "Arun1102"
           git config --global user.email "arunattappan@gmail.com"
+          git commit -m "commit changes"
+          git push
 
-      - name: Add remote repository
-        env:
-          GIT_USER: Arun1102
-          TOKEN_GIT: ${{ secrets.TOKEN_GIT }}
-        run: git remote add main https://${{ env.GIT_USER }}:${{ secrets.TOKEN_GIT }}@github.com/Arun1102/MainRepo.git
 
-      - name: Push to remote branch
-        run: git push main main:MainRepo
 
