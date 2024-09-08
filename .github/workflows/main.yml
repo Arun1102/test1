@@ -15,7 +15,7 @@ jobs:
 
     - name: Print hello world
       id: print
-      run: echo "hello world"  
+      run: echo "hello world  
 
     - name: Set up Git
       run: |
