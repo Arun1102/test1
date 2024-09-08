@@ -31,8 +31,10 @@ jobs:
 
     - name: Copy files
       run: |
-        cp -r . MainRepo/company A
-        cp -r . MainRepo/company B
+        mkdir -p target-repo/company_A
+        mkdir -p target-repo/company_B
+        cp -r . MainRepo/company_A
+        cp -r . MainRepo/company_B
       # Adjust this if you need specific files
 
     - name: Commit and push to target repository
