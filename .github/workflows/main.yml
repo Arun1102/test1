@@ -13,12 +13,17 @@ jobs:
     - name: Checkout source repository
       uses: actions/checkout@v3
 
+    - name: Print hello world
+      id: print
+      run: echo "hello world"  
+
     - name: Set up Git
       run: |
         git config --global user.name "Arun1102"
         git config --global user.email "arunattappan@gmail.com"
 
     - name: Clone target repository
+      if: ${{ steps.print.outcome == 'success' }}
       run: |
         git clone https://github.com/Arun1102/MainRepo.git
       env:
