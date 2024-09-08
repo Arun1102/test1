@@ -35,7 +35,7 @@ jobs:
         mkdir -p target-repo/company_B
         # cp -r . MainRepo/company_A
         # cp -r . MainRepo/company_B
-        rsync -av --exclude='MainRepo' .src/ MainRepo/company_B
+        rsync -av --exclude='.git' --exclude='MainRepo' .src/ MainRepo/company_B
         rsync -av --exclude='MainRepo' .src/ MainRepo/company_A
       # Adjust this if you need specific files
 
