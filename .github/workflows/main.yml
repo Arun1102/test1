@@ -31,7 +31,8 @@ jobs:
 
     - name: Copy files
       run: |
-        cp -r src MainRepo/
+        cp -r . MainRepo/company A
+        cp -r . MainRepo/company B
       # Adjust this if you need specific files
 
     - name: Commit and push to target repository
