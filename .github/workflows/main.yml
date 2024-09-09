@@ -33,6 +33,7 @@ jobs:
       run: |
         # Find all directories and save to an array
         cd MainRepo
+        git add .
         IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
 
         for company in "${folders[@]}"; do
