@@ -17,7 +17,7 @@ jobs:
 
     - name: Print hello world
       id: print
-      run: echo "hello world"  
+      run: echo "hello world"
 
     - name: Set up Git
       run: |
@@ -35,23 +35,21 @@ jobs:
       id: list_folders
       run: |
         # Find all root-level directories in the target repository
-        root_folders=$(find MainRepo -maxdepth 1 -type d -not -name '.git' -not -name 'MainRepo' -not -name '.github')
+        root_folders=$(find MainRepo -mindepth 1 -maxdepth 1 -type d -not -name '.git' -not -name 'MainRepo' -not -name '.github')
         echo "Root folders found: $root_folders"
         echo "::set-output name=folders::$root_folders"
 
     - name: Sync source repository to each target folder
       run: |
         # Convert the list of root folders to an array
-        folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '))
-    
+        folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr ' ' '\n'))
+
         # Sync the entire source repository to each target folder
         for folder in "${folders[@]}"; do
           echo "Syncing source repository to $folder"
           # Ensure folder path is correctly formatted
-          folder_path=$(echo $folder | xargs)
-          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$folder_path/"
+          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$folder/"
         done
-
 
     - name: Commit and push to target repository
       run: |
