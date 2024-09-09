@@ -25,7 +25,8 @@ jobs:
     # Step 3: Copy files from source to target repository
     - name: Copy files to target repository
       run: |
-        cp -R ./source-folder/. ./target-repo-folder/target-folder/
+        cp -R ./src/ ./target-directory/
+
     
     # Step 4: Commit and push the changes to the target repository
     - name: Commit and push changes
