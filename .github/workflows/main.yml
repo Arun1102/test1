@@ -52,20 +52,14 @@ jobs:
 
         echo "Raw output:"
 
-    - name: Find all root-level directories in the target repository
-      id: list_folderss
-      run: |
-        folders=$(find . -maxdepth 1 -type d | sed 's|^\./||')
-        echo "ROOT_FOLDERS<<EOF" >> $GITHUB_ENV
-        echo "$folders" >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
+    
     - name: Process folders
       run: |
         echo "Raw folders:"
-        echo "$ROOT_FOLDERS"
+        echo "$root_folders"
     
         # Convert folders to array
-        IFS=$'\n' read -r -d '' -a folder <<< "$ROOT_FOLDERS"
+        IFS=$'\n' read -r -d '' -a folder <<< "$root_folders"
         
 
         
