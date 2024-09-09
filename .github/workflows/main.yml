@@ -31,12 +31,30 @@ jobs:
     - name: List and Save Folders
       id: list_folders
       run: |
-        # Find all directories and save to an array
-        IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
-        for company in "${folders[@]}"; do
-          echo "Syncing to MainRepo/$company"
-          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$company/temp/"
+        # # Find all directories and save to an array
+        # IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
+        # for company in "${folders[@]}"; do
+        #   echo "Syncing to MainRepo/$company"
+        #   rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$company/temp/"
+        # done
+
+       
+        # Ensure we start from the root of the repository
+        cd "$(git rev-parse --show-toplevel)"
+        
+        # Find all directories in the root directory (excluding hidden and special directories)
+        IFS=$'\n'
+        folders=($(find . -maxdepth 1 -type d ! -name '.git' ! -name 'MainRepo' ! -name '.github' ! -name '.' ))
+        
+        # Iterate over each folder
+        for folder in "${folders[@]}"; do
+          # Remove leading './' from folder path
+          clean_folder="${folder#./}"
+          
+          echo "Syncing to $clean_folder/temp/"
+          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$clean_folder/temp/"
         done
+
         
     # - name: Copy files
     #   run: |
