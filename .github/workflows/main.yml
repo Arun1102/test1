@@ -35,7 +35,7 @@ jobs:
         IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
         for company in "${folders[@]}"; do
           echo "Syncing to MainRepo/$company"
-          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$company"
+          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$company/subdir/"
         done
         
 
