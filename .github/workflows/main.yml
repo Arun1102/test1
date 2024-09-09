@@ -42,13 +42,16 @@ jobs:
     - name: Sync source repository to each target folder
       run: |
         # Convert the list of root folders to an array
-        IFS=$'\n' read -rd '' -a folders <<< "${{ steps.list_folders.outputs.folders }}"
-
+        folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '))
+    
         # Sync the entire source repository to each target folder
         for folder in "${folders[@]}"; do
           echo "Syncing source repository to $folder"
-          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$folder/"
+          # Ensure folder path is correctly formatted
+          folder_path=$(echo $folder | xargs)
+          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$folder_path/"
         done
+
 
     - name: Commit and push to target repository
       run: |
