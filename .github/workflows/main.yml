@@ -22,7 +22,7 @@ jobs:
     - name: Copy common files to new Repo
       shell: bash
       run: |
-          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='README.md' --exclude='text' --exclude='.github' ./ "company A"
+          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "company A"
 
     - name: Check for new files
       id: newFiles
