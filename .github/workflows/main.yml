@@ -34,11 +34,11 @@ jobs:
         # Find all directories and save to an array
         cd MainRepo
         IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
-        cd ..
         cd test1
         for company in "${folders[@]}"; do
           echo "Syncing to MainRepo/$company"
-          mkdir -p "MainRepo/$company"  # Create the target directory
+          # mkdir -p "MainRepo/$company"  # Create the target directory
+          cd test1
           rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$company"
         done
         
