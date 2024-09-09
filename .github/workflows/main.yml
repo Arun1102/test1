@@ -28,15 +28,28 @@ jobs:
         git clone https://github.com/Arun1102/MainRepo.git
       env:
         TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
-
-    - name: Copy files
+    - name: List and Save Folders
+      id: list_folders
       run: |
-        mkdir -p target-repo/company_A
-        mkdir -p target-repo/company_B
-        mkdir -p target-repo/company_C
-        rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_B
-        rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_A
-        rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_C
+        # Find all directories and save to an array
+        IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
+        
+        # Save the list to a file
+        echo "Saving folder list to folders.txt"
+        echo "FOLDERS<<EOF" >> $GITHUB_ENV
+        for folder in "${folders[@]}"; do
+          echo "$folder"
+        done >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+    # - name: Copy files
+    #   run: |
+    #     mkdir -p target-repo/company_A
+    #     mkdir -p target-repo/company_B
+    #     mkdir -p target-repo/company_C
+    #     rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_B
+    #     rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_A
+    #     rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_C
       # Adjust this if you need specific files
 
     - name: Commit and push to target repository
@@ -47,8 +60,3 @@ jobs:
         git push https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/Arun1102/MainRepo.git
       env:
         TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
-
-
-
-
-
