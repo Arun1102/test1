@@ -11,11 +11,7 @@ jobs:
 
     steps:
     - name: Checkout source repository
-      uses: actions/checkout@v3
-
-    - name: Print hello world
-      id: print
-      run: echo "hello world"  
+      uses: actions/checkout@v3 
 
     - name: Set up Git
       run: |
