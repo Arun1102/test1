@@ -47,22 +47,7 @@ jobs:
     - name: Sync source repository to each target folder
       run: |
         # Convert the list of root folders to an array
-        # IFS=$'\n' read -d '' -r -a folders <<< "${{ steps.list_folders.outputs.folders }}"
-        # IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
-
-        echo "Raw output:"
-
-    
-    - name: Process folders
-      run: |
-        echo "Raw folders:"
-        echo "$root_folders"
-    
-        # Convert folders to array
-        IFS=$'\n' read -r -d '' -a folder <<< "$root_folders"
-        
-
-        
+        folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '))
 
         # Print each folder path for debugging
         for folder in "${folders[@]}"; do
