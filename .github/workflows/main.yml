@@ -46,16 +46,11 @@ jobs:
             # Clean up the folder path by removing leading './'
             clean_folder="${folder#./}"
             
-            # Define the target path
-            target_dir="MainRepo/$clean_folder"
-            
-            # Create the target directory if it doesn't exist
-            mkdir -p "$target_dir"
             
             echo "Syncing to $target_dir"
             
             # Rsync to the target directory
-            rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$target_dir"
+            rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$clean_folder"
           done
 
        
