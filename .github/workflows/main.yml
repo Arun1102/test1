@@ -33,15 +33,12 @@ jobs:
       run: |
         # Find all directories and save to an array
         IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
-        
-        # Save the list to a file
-        echo "Saving folder list to folders.txt"
-        echo "FOLDERS<<EOF" >> $GITHUB_ENV
-        for folder in "${folders[@]}"; do
-          echo "$folder"
-        done >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
 
+        for company in "${folders[@]}"; do
+          echo "Syncing to MainRepo/$company"
+          mkdir -p "MainRepo/$company"  # Create the target directory
+          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "MainRepo/$company"
+        done
     # - name: Copy files
     #   run: |
     #     mkdir -p target-repo/company_A
