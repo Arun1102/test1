@@ -51,12 +51,22 @@ jobs:
         # IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
 
         echo "Raw output:"
-        echo "${{ steps.list_folders.outputs.folders }}"
+
+    - name: Find all root-level directories in the target repository
+      id: list_folderss
+      run: |
+        folders=$(find . -maxdepth 1 -type d | sed 's|^\./||')
+        echo "ROOT_FOLDERS<<EOF" >> $GITHUB_ENV
+        echo "$folders" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+    - name: Process folders
+      run: |
+        echo "Raw folders:"
+        echo "$ROOT_FOLDERS"
     
-        echo "Transformed output:"
-        echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '
-    
-        folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '))
+        # Convert folders to array
+        IFS=$'\n' read -r -d '' -a folder <<< "$ROOT_FOLDERS"
+        
 
         
 
