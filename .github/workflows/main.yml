@@ -45,10 +45,19 @@ jobs:
         # Sync the entire source repository to each target folder
         for folder in "${folders[@]}"; do
           echo "Syncing source repository to $folder"
-          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$folder/"
+          rsync -av --exclude='.git' --exclude='.github' ./ "$folder/"
         done
 
-    - name: Commit and push to target repository
+    - name: Check if there are any changes
+      run: |
+        cd MainRepo
+        if git diff --quiet; then
+          echo "No changes to commit"
+          exit 0
+        fi
+
+    - name: Commit and push changes to target repository
+      if: success()  # Only run this if changes are detected
       run: |
         cd MainRepo
         git add .
