@@ -1,4 +1,4 @@
-name: testing github action
+name: Sync source repository to target folders
 
 on:
   push:
@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout source repository
       uses: actions/checkout@v3
+      with:
+        repository: Arun1102/test1
 
     - name: Print hello world
       id: print
