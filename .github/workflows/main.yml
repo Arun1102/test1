@@ -1,43 +1,39 @@
-name: testing github action
+name: Copy Resources from One Repo to Another
 
 on:
   push:
     branches:
-      - main  # Trigger the action on pushes to the main branch
+      - main  # Trigger the action on push to the main branch
 
 jobs:
-  deploy:
+  sync-repos:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout the source repository (current repo)
     - name: Checkout source repository
       uses: actions/checkout@v3
 
-    - name: Print hello world
-      id: print
-      run: echo "hello world"  
+    # Step 2: Checkout the target repository using a deploy key or personal access token
+    - name: Checkout target repository
+      uses: actions/checkout@v3
+      with:
+        repository: Arun1102/MainRepo  # Target repo in format username/repo
+        token: ${{ secrets.TARGET_REPO_PAT }}  # You can use a PAT in GitHub Secrets for access
+        path: target-repo-folder            # Path to checkout the target repo
 
-    - name: Set up Git
+    # Step 3: Copy files from source to target repository
+    - name: Copy files to target repository
       run: |
+        cp -R ./source-folder/. ./target-repo-folder/target-folder/
+    
+    # Step 4: Commit and push the changes to the target repository
+    - name: Commit and push changes
+      run: |
+        cd target-repo-folder
         git config --global user.name "Arun1102"
         git config --global user.email "arunattappan@gmail.com"
-
-    - name: Clone target repository
-      if: ${{ steps.print.outcome == 'success' }}
-      run: |
-        git clone https://github.com/Arun1102/MainRepo.git
-      env:
-        TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
-
-    - name: Replace folder content with new cloned folder
-      run: |
-        rsync -av --delete --exclude='.git' --exclude='.github' ./ MainRepo/
-        
-    - name: Commit and push to target repository
-      run: |
-        cd MainRepo
         git add .
-        git commit -m "Deploy updates"
-        git push https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/Arun1102/MainRepo.git
-      env:
-        TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
+        git commit -m "Sync resources from source repo"
+        git push origin main
+
