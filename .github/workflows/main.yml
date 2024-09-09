@@ -32,7 +32,7 @@ jobs:
       id: list_folders
       run: |
         # Find all directories and save to an array
-        IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
+        IFS=$'\n' folders=($(find . -maxdepth 1 -type d -not -path '*/\.*'))
         for company in "${folders[@]}"; do
           echo "Syncing to MainRepo/$company"
           # mkdir -p "MainRepo/$company"  # Create the target directory
