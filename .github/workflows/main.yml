@@ -50,9 +50,13 @@ jobs:
         # IFS=$'\n' read -d '' -r -a folders <<< "${{ steps.list_folders.outputs.folders }}"
         # IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
 
-        IFS=$'\n'
-        folders=($(find . -type d -not -path '*/\.*'))
-        unset IFS
+        echo "Raw output:"
+        echo "${{ steps.list_folders.outputs.folders }}"
+    
+        echo "Transformed output:"
+        echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '
+    
+        folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '))
 
         
 
