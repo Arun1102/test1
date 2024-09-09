@@ -12,38 +12,48 @@ jobs:
     steps:
     - name: Checkout source repository
       uses: actions/checkout@v3
-      with:
-        path: './'
-        repository: 'Arun1102/test1'
-        token: ${{ secrets.TARGET_REPO_PAT }}
-        fetch-depth: 0
-        persist-credentials: true
 
-    - name: Copy common files to new Repo
-      shell: bash
-      run: |
-          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "company A"
+    - name: Print hello world
+      id: print
+      run: echo "hello world"  
 
-    - name: Check for new files
-      id: newFiles
-      shell: bash
-      working-directory: ./
-      run: |
-        git add -A
-        git status --porcelain | wc -l
-        if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
-          echo "::set-output name=hasNewFiles::true"
-        else
-          echo "::set-output name=hasNewFiles::false"
-        fi
-
-    - name: Push new files
-      if: ${{ steps.newFiles.outputs.hasNewFiles == 'true' }}
-      shell: bash
-      working-directory: 'company A'
+    - name: Set up Git
       run: |
         git config --global user.name "Arun1102"
         git config --global user.email "arunattappan@gmail.com"
-        git add -A
-        git commit -m "commited"
-        git push
+
+    - name: Clone target repository
+      if: ${{ steps.print.outcome == 'success' }}
+      run: |
+        git clone https://github.com/Arun1102/MainRepo.git
+      env:
+        TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
+    - name: List and Save Folders
+      id: list_folders
+      run: |
+        # Find all directories and save to an array
+        IFS=$'\n' folders=($(find . -type d -not -path '*/\.*'))
+        for company in "${folders[@]}"; do
+          echo "Syncing to MainRepo/$company"
+          # mkdir -p "MainRepo/$company"  # Create the target directory
+          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$company"
+        done
+        
+    # - name: Copy files
+    #   run: |
+    #     mkdir -p target-repo/company_A
+    #     mkdir -p target-repo/company_B
+    #     mkdir -p target-repo/company_C
+    #     rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_B
+    #     rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_A
+    #     rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_C
+      # Adjust this if you need specific files
+
+    - name: Commit and push to target repository
+      run: |
+        cd MainRepo
+        git add .
+        git commit -m "Deploy updates"
+        git push https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/Arun1102/MainRepo.git
+      env:
+        TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
