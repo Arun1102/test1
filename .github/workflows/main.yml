@@ -39,15 +39,20 @@ jobs:
         echo "Root folders found: $root_folders"
         echo "::set-output name=folders::$root_folders"
 
+    - name: Debug folder paths
+      run: |
+        echo "Folders to sync:"
+        echo "${{ steps.list_folders.outputs.folders }}"
+
     - name: Sync source repository to each target folder
       run: |
         # Convert the list of root folders to an array
-        folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr ' ' '\n'))
+        folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '))
 
-        # Sync the entire source repository to each target folder
+        # Print each folder path for debugging
         for folder in "${folders[@]}"; do
           echo "Syncing source repository to $folder"
-          # Ensure folder path is correctly formatted
+          echo "Folder exists: $(ls -ld "$folder")"
           rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$folder/"
         done
 
