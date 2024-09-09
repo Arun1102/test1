@@ -28,32 +28,31 @@ jobs:
         git clone https://github.com/Arun1102/MainRepo.git
       env:
         TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
-    - name: List and Save Folders
+
+    - name: List root folders from target repository
       id: list_folders
       run: |
-        # Find all directories and save to an array
-        IFS=$'\n' folders=($(find . -maxdepth 1 -type d -not -path '*/\.*'))
-        for company in "${folders[@]}"; do
-          echo "Syncing to MainRepo/$company"
-          # mkdir -p "MainRepo/$company"  # Create the target directory
-          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$company"
+        # Find all root-level directories in the target repository
+        root_folders=$(find MainRepo -maxdepth 1 -type d | tail -n +2)
+        echo "Root folders found: $root_folders"
+        echo "::set-output name=folders::$root_folders"
+
+    - name: Sync source repository to each target folder
+      run: |
+        # Convert the list of root folders to an array
+        folders=(${{ steps.list_folders.outputs.folders }})
+
+        # Sync the entire source repository to each target folder
+        for folder in "${folders[@]}"; do
+          echo "Syncing source repository to $folder"
+          rsync -av --exclude='.git' --exclude='.github' ./ "$folder/"
         done
-        
-    # - name: Copy files
-    #   run: |
-    #     mkdir -p target-repo/company_A
-    #     mkdir -p target-repo/company_B
-    #     mkdir -p target-repo/company_C
-    #     rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_B
-    #     rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_A
-    #     rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ MainRepo/company_C
-      # Adjust this if you need specific files
 
     - name: Commit and push to target repository
       run: |
         cd MainRepo
         git add .
-        git commit -m "Deploy updates"
+        git commit -m "Sync source repo to all root folders"
         git push https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/Arun1102/MainRepo.git
       env:
         TARGET_REPO_PAT: ${{ secrets.TARGET_REPO_PAT }}
