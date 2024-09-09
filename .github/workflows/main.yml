@@ -45,7 +45,7 @@ jobs:
         # Sync the entire source repository to each target folder
         for folder in "${folders[@]}"; do
           echo "Syncing source repository to $folder"
-          rsync -av --exclude='.git' --exclude='.github' ./ "$folder/"
+          rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$folder/"
         done
 
     - name: Commit and push to target repository
