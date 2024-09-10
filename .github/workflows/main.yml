@@ -44,7 +44,16 @@ jobs:
         echo "Folders to sync:"
         echo "${{ steps.list_folders.outputs.folders }}"
         folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '))
-        echo $($folders)
+
+    - name: debug latest folders
+    - id: listing_folder
+      run: |
+        echo "::set-output name=folders::$(ls -d */)"
+        
+    - name: Debug output
+      run: echo "${{ steps.listing_folder.outputs.folders }}"
+
+
 
     - name: Sync source repository to each target folder
       run: |
