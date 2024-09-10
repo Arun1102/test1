@@ -54,7 +54,7 @@ jobs:
     - name: Sync source repository to each target folder
       run: |
         # Convert the list of root folders to an array
-        folders=(${{ steps.list_folders.outputs.folders }})
+        folders=($(find MainRepo -mindepth 1 -maxdepth 1 -type d -not -name '.git' -not -name '.github'))
     
         # Loop through each folder and sync
         for folder in "${folders[@]}"; do
