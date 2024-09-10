@@ -37,14 +37,14 @@ jobs:
         # Find all root-level directories in the target repository
         root_folders=$(find MainRepo -mindepth 1 -maxdepth 1 -type d -not -name '.git' -not -name '.github')
         echo "Root folders found: $root_folders"
-        echo "::set-output name=folders::$root_folders"
+        # echo "::set-output name=folders::$root_folders"
 
     - name: Debug folder paths
       run: |
         echo "Folders to sync:"
         echo "${{ steps.list_folders.outputs.folders }}"
         # Convert the list of folders into an array
-        folders=(${{ steps.list_folders.outputs.folders }})
+        folders=($(find MainRepo -mindepth 1 -maxdepth 1 -type d -not -name '.git' -not -name '.github'))
     
         # Print each folder path for debugging
         for folder in "${folders[@]}"; do
