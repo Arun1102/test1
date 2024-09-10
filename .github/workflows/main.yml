@@ -45,14 +45,7 @@ jobs:
         echo "${{ steps.list_folders.outputs.folders }}"
         folders=($(echo "${{ steps.list_folders.outputs.folders }}" | tr '\n' ' '))
 
-    - name: debug latest folders
-    - id: listing_folder
-      run: |
-        echo "::set-output name=folders::$(ls -d */)"
-        
-    - name: Debug output
-      run: |
-        echo "${{ steps.listing_folder.outputs.folders }}"
+   
 
 
 
