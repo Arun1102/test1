@@ -51,7 +51,8 @@ jobs:
         echo "::set-output name=folders::$(ls -d */)"
         
     - name: Debug output
-      run: echo "${{ steps.listing_folder.outputs.folders }}"
+      run: |
+        echo "${{ steps.listing_folder.outputs.folders }}"
 
 
 
