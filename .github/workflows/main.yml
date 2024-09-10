@@ -34,9 +34,10 @@ jobs:
     - name: List root folders from target repository
       id: list_folders
       run: |
-        folders=$(find . -maxdepth 1 -type d | grep -v '\.git')
-        echo "Folders to sync: $folders"
-        echo "::set-output name=folders::$folders"
+        # Find all root-level directories in the target repository
+        root_folders=$(find MainRepo -mindepth 1 -maxdepth 1 -type d -not -name '.git' -not -name 'MainRepo' -not -name '.github')
+        echo "Root folders found: $root_folders"
+        echo "::set-output name=folders::$root_folders"
 
     - name: Debug folder paths
       run: |
