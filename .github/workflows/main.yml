@@ -15,9 +15,6 @@ jobs:
       with:
         repository: Arun1102/test1
 
-    - name: Print hello world
-      id: print
-      run: echo "hello world"
 
     - name: Set up Git
       run: |
