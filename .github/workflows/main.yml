@@ -37,24 +37,26 @@ jobs:
         # Find all root-level directories in the target repository
         root_folders=$(find MainRepo -mindepth 1 -maxdepth 1 -type d -not -name '.git' -not -name '.github')
         echo "Root folders found: $root_folders"
-        echo "::set-output name=folders::$root_folders"
+    
+        # Save the output to a temporary environment file
+        echo "folders=$root_folders" >> $GITHUB_ENV
 
     - name: Debug folder paths
       run: |
         echo "Folders to sync:"
-        echo "${{ steps.list_folders.outputs.folders }}"
+        echo "${{ env.folders }}"
         # Convert the list of folders into an array
-        folders=(${{ steps.list_folders.outputs.folders }})
+        folders=(${{ env.folders }})
     
         # Print each folder path for debugging
         for folder in "${folders[@]}"; do
           echo "Folder: $folder"
         done
-  
+
     - name: Sync source repository to each target folder
       run: |
         # Convert the list of root folders to an array
-        folders=(${{ steps.list_folders.outputs.folders }})
+        folders=(${{ env.folders }})
     
         # Loop through each folder and sync
         for folder in "${folders[@]}"; do
@@ -64,6 +66,7 @@ jobs:
           # Rsync to sync all files from the current directory to each target folder
           rsync -av --exclude='.git' --exclude='MainRepo' --exclude='.github' ./ "$folder/"
         done
+
 
 
     - name: Commit and push to target repository
