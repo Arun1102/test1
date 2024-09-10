@@ -34,7 +34,9 @@ jobs:
     - name: List root folders from target repository
       id: list_folders
       run: |
-        echo "::set-output name=folders::$(ls -d */)"
+        folders=$(find . -maxdepth 1 -type d | grep -v '\.git')
+        echo "Folders to sync: $folders"
+        echo "::set-output name=folders::$folders"
 
     - name: Debug folder paths
       run: |
